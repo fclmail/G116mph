@@ -472,7 +472,7 @@ FREE: "0xE1ae4d4A3A2200AE5ac06E50BCA0DD7E52A19238",
       try {  
         const contractUSDCBefore = await getContractUSDCBalance();  
         
-        log(`⚡⚡⚡⚡⚡⚡⚡ Executing arbitrage for ${symbol} (${profitPct.toFixed(2)}%)...`);  
+        log(`⚡⚡⚡⚡🟢⚡⚡⚡⚡ Executing arbitrage for ${symbol} (${profitPct.toFixed(2)}%)...`);  
         
         const tx = await contract.executeArbitrage(  
           buyRouter,  
@@ -510,13 +510,13 @@ FREE: "0xE1ae4d4A3A2200AE5ac06E50BCA0DD7E52A19238",
         transactionHistory.push(txDetails);  
         logTransaction(txDetails);  
         
-        log(`✅✅🟢✅✅✅ Arbitrage successful! Profit: ${profit.toFixed(6)} USDC | Tx: ${receipt.transactionHash}`);  
+        log(`✅✅💵✅🟢✅✅✅✅ Arbitrage successful! Profit: ${profit.toFixed(6)} USDC | Tx: ${receipt.transactionHash}`);  
         
         // Withdraw profits if not set to accumulate  
         if (!document.getElementById("accumulateToggle").checked) {  
           const withdrawTx = await contract.withdrawProfits();  
           await withdrawTx.wait();  
-          log("💰💰💰💰💰💰💰💰 Profits withdrawn to your wallet");  
+          log("💰 💰💰💰🟢💰💰💰💰Profits withdrawn to your wallet");  
         }  
         
         updateBalances();  
@@ -531,7 +531,7 @@ FREE: "0xE1ae4d4A3A2200AE5ac06E50BCA0DD7E52A19238",
         log("Withdrawing USDC from contract...");  
         const tx = await contract.withdrawProfits();  
         await tx.wait();  
-        log("✅ ✅✅✅✅USDC withdrawn successfully");  
+        log("✅✅✅✅ USDC withdrawn successfully");  
         updateBalances();  
       } catch (error) {  
         log(`⚠️ Withdrawal failed: ${error.message}`);  
@@ -575,4 +575,27 @@ FREE: "0xE1ae4d4A3A2200AE5ac06E50BCA0DD7E52A19238",
     }  
 
     function log(message) {  
-      cons
+      const logDiv = document.getElementById("log");  
+      logDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}<br>` + logDiv.innerHTML;  
+    }  
+
+    // Add event listeners for start and stop scanning  
+    document.getElementById('startScan').addEventListener('click', () => {  
+      isScanning = true;  
+      startAutoScan();  
+      log("Auto scan started");  
+    });  
+
+    document.getElementById('stopScan').addEventListener('click', () => {  
+      isScanning = false;  
+      clearInterval(scanInterval);  
+      log("Auto scan stopped");  
+    });  
+
+    document.getElementById('pauseScan').addEventListener('click', () => {  
+      isScanning = !isScanning;  
+      log(isScanning ? "Auto scan paused" : "Auto scan resumed");  
+    });  
+  </script>  
+</body>  
+</html>
